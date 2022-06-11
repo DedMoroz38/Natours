@@ -12,6 +12,7 @@ const viewRouter = require('./routes/viewRoutes');
 const cookieParser = require("cookie-parser");
 const bookingRouter = require('./routes/bookingRoutes');
 const cors = require("cors");
+const compression = require("compression");
 
 const helmet = require("helmet");
 const mongoSanitise = require("express-mongo-sanitize");
@@ -53,7 +54,7 @@ app.use(hpp({
     ]
 }));
 
-
+app.use(compression());
 
 app.use((req, res, next) => {
     req.requestTime = new Date().toDateString();

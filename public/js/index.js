@@ -24,7 +24,6 @@ if (settingForm){
     form.append('name', document.getElementById("name").value);
     form.append('email', document.getElementById("login").value);
     form.append('photo', document.getElementById("photo").files[0]);
-    console.log(document.getElementById("photo").files[0]);
     await updateSettings(form, 'data');
   });
 }

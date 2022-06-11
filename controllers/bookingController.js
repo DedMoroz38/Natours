@@ -26,7 +26,6 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
       }
     ]
   });
-  console.log("Route:", session.success_url);
   res.status(200).json({
     status: 'success',
     session
@@ -35,13 +34,11 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
 
 exports.createBookingCheckout = catchAsync( async (req, res, next) => {
   const {tour, user, price} = req.query;
-  console.log("Queryyyyyyyyyy:", req.query);
   if(!tour || !user || !price) return next();
 
   await Booking.create({tour, user, price});
 
   const url = req.originalUrl.split('?')[0];
-  console.log("URL: ", url);
   res.redirect(url);
 });
 

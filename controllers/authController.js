@@ -47,7 +47,6 @@ exports.signup = catchAsync(async (req, res, next) => {
         active: req.body.active
     });
     const url = `${req.protocol}://${req.get('host')}/me`;
-    console.log(url);
     await new Email(newUser, url).sendWelcome();
 
     createSendToken(newUser, 201, res);
@@ -79,7 +78,6 @@ exports.protect = catchAsync( async (req, res, next) => {
     let token;
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         token = req.headers.authorization.split(' ')[1];
-        console.log("tolen:", token);
     } else if (req.cookies.jwt) {
         token = req.cookies.jwt
     }
