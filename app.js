@@ -21,6 +21,8 @@ const hpp = require("hpp");
 
 const app = express();
 
+app.enable("trust proxy");
+
 app.set("view engine", "pug");
 
 app.use(express.static(path.join(__dirname, "public")));

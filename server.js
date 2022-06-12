@@ -32,4 +32,11 @@ process.on('unhandledRejection', err => {
     server.close(() => {
         process.exit(1);
     });
-});
+}); 
+
+process.on('SIGTERM', () => {
+    console.log('SIGTERM RECIEVED');
+    server.close(() => {
+        console.log("Procss terminated!");
+    });
+}); 

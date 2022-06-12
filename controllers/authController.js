@@ -20,9 +20,9 @@ const createSendToken = (user, statusCode, res) => {
         expires: new Date(
             Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
         ),
-        httpOnly: true //no way to be modified by the browser
+        httpOnly: true, //no way to be modified by the browser
+        secure:  req.secure || req.headers("x-forwarded-proto") === 'https'
     }
-    if(process.env.NODE_ENV === "production") cookieOption.secure = true;
     res.cookie('jwt', token, cookieOption);
 
     user.password = undefined;
