@@ -10,7 +10,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.getCheckoutSession = catchAsync( async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
-  // console.log(req);
+  console.log(req.user.login);
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
 
@@ -48,13 +48,14 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
 const createBookingCheckout = async session => {
   const tour = session.client_reference_id;
   const user = (await User.findOne({ login: session.customer_email })).id;
+  console.log(user);
   // const price = session.display_items[0].amount / 100;
   const price = 100;
   await Booking.create({ tour, user, price });
 };9
 
 exports.webhookCheckout = (req, res, next) => {
-  console.log(session);
+  console.log("Here");
   const signature = req.headers['stripe-signature'];
 
   let event;
