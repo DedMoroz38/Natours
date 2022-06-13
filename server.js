@@ -25,6 +25,7 @@ mongoose.connect(DB, {
 const port = process.env.PORT || 3000;
 // process.env.NODE_ENV = 'production';
 const server = app.listen(port, () => {
+    console.log(process.env.NODE_ENV);
     console.log('Run!');
 });
 

@@ -14,16 +14,14 @@ const signToken = id => {
     });
 }
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
     const token = signToken(user._id);
-    const cookieOption = {
-        expires: new Date(
-            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-        ),
+    
+    res.cookie('jwt', token, {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true, //no way to be modified by the browser
-        secure:  req.secure || req.headers("x-forwarded-proto") === 'https'
-    }
-    res.cookie('jwt', token, cookieOption);
+        secure:  req.secure || req.headers["x-forwarded-proto"] === 'https'
+    });
 
     user.password = undefined;
 
@@ -31,7 +29,7 @@ const createSendToken = (user, statusCode, res) => {
         status: "success",
         token,
         data: {
-            user: user
+            user
         }
     });
 }
@@ -49,12 +47,11 @@ exports.signup = catchAsync(async (req, res, next) => {
     const url = `${req.protocol}://${req.get('host')}/me`;
     await new Email(newUser, url).sendWelcome();
 
-    createSendToken(newUser, 201, res);
+    createSendToken(newUser, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
     let {login, password} = req.body;
-    console.log(login, password);
     if(!login || !password) {
         return next(new AppError("Please provide login and password!", 400));
     }
@@ -63,7 +60,7 @@ exports.login = catchAsync(async (req, res, next) => {
     if(!user || !(await user.checkPassword(password, user.password))){
         return next(new AppError("Incorrect email or password!", 401));
     }
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 });
 
 exports.logout = (req, res) => {
@@ -179,7 +176,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync( async (req, res, next) => {
@@ -192,5 +189,5 @@ exports.updatePassword = catchAsync( async (req, res, next) => {
     user.passwordConfirm= req.body.passwordConfirm;
     await user.save();
 
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 });
