@@ -1,5 +1,5 @@
 const Tour = require('../models/tourModel');
-// const User = require('../models/userModel');
+const User = require('../models/userModel');
 
 const Booking = require('../models/bookingModel');
 
@@ -22,7 +22,7 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: tour.summary,
-        images: [`${req.protocol}://${req.get("host")}/${tour.imageCover}`],
+        images: [`${req.protocol}://${req.get("host")}/img/tours${tour.imageCover}`],
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1
@@ -45,13 +45,16 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
 //   res.redirect(url);
 // });
 const createBookingCheckout = async session => {
+  console.log("here");
   const tour = session.client_reference_id;
   const user = (await User.findOne({login: session.customer_email})).id;
   const price = session.line_items[0].amount / 100;
+  console.log(tour, user, price);
   await Booking.create({tour, user, price});
 }
 
 exports.webhookCheckout = (req, res, next) => {
+  console.log("Here");
   const signiture = req.headers['stripe-signiture'];
   let event;
   try{
