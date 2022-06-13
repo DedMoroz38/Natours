@@ -1,5 +1,5 @@
 const Tour = require('../models/tourModel');
-const User = require('../models/userModel');
+// const User = require('../models/userModel');
 
 const Booking = require('../models/bookingModel');
 
@@ -55,7 +55,7 @@ exports.webhookCheckout = (req, res, next) => {
   const signiture = req.headers['stripe-signiture'];
   let event;
   try{
-    event = stripe.webhooks.constructEvent(req.body, signiture, process.env.SSTRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(req.body, signiture, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err){
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
